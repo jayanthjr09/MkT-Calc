@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CSV Upload{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .header {
+            background-color: #343a40;
+            padding: 20px;
+            /*text-align: center;*/
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .container-custom {
+            /*max-width: 900px;*/
+            margin-top: 10px;
+            padding: 10px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .navbar {
+            background-color: #007bff;
+        }
+        .navbar-brand, .nav-link {
+            color: white !important;
+        }
+        .nav-link.active {
+            font-weight: bold;
+            text-decoration: underline;
+        }
+        .thead-light th {
+            background-color: #f8f9fa;
+        }
+        .card {
+            margin-top: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .alert {
+            margin-top: 20px;
+        }
+        .chart-container {
+            position: relative;
+            height: 400px; /* Customize the height of the chart */
+        }
+        table {
+            margin-top: 20px;
+        }
+        /* Optional: Customizing the scroll bar */
+        .table-responsive::-webkit-scrollbar {
+            width: 12px;
+        }
+        .table-responsive::-webkit-scrollbar-thumb {
+            background-color: #888;
+            border-radius: 6px;
+        }
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background-color: #555;
+        }
+    </style>
+    {% block stylesheets %}{% endblock %}
+</head>
+<body>
+    <!-- Header with Logo -->
+    <div class="header">
+    <img src="https://static.wixstatic.com/media/209a35_efcc9d2058264c448e05f81457ff21c9~mv2.png/v1/fill/w_358,h_68,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/logo_muted%20(1).png" alt="Validaide logo" style="width:199px;height:38px;object-fit:cover;" width="199" height="38" fetchpriority="high">
+    <span style="position: absolute; left: 50%; transform: translateX(-50%); font-size: 1.5rem; font-weight: bold;">Mean Kinetic Temperature Calculator</span>
+
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link {% if app.request.attributes.get('_route') == 'upload' %}active{% endif %}" href="{{ path('upload') }}">Upload</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if app.request.attributes.get('_route') == 'latest_readings' or app.request.attributes.get('_route') == 'show_readings' %}active{% endif %}" href="{{ path('latest_readings') }}">Readings</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if app.request.attributes.get('_route') == 'custom_mkt' %}active{% endif %}" href="{{ path('custom_mkt') }}">MKT Calculation</a>
+                    </li>
+                </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container justify-content-center align-items-center" style="height: 80vh;">
+        <div class="container-custom w-100">
+            {% block body %}{% endblock %}
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block javascripts %}{% endblock %}
+</body>
+</html>

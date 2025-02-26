@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Upload CSV File{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    {% for label, messages in app.flashes %}
+        <div class="alert alert-{{ label }}">
+            {% for message in messages %}
+                <p>{{ message }}</p>
+            {% endfor %}
+        </div>
+    {% endfor %}
+    
+    <div class="card p-3">
+        <div class="d-flex align-items-center">
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'd-flex align-items-center w-100'}}) }}
+            <div class="form-group me-3 mb-0">
+                {{ form_label(form.file, 'Please select a valid CSV file to upload.') }}
+                {{ form_widget(form.file, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.file) }}
+            </div>
+            <button type="submit" class="btn btn-primary margin-top">Upload</button>
+            {{ form_end(form) }}
+        </div>
+    </div>
+    
+    <div class="mt-4" style="max-height: 500px; overflow-y: auto;">
+        <h2>Uploaded Data Sets</h2>
+        <ul class="list-group">
+            {% for dataSet in dataSets %}
+                <li class="list-group-item">
+                    <a href="{{ path('show_readings', {'id': dataSet.id}) }}">{{ dataSet.name }}</a> Uploaded on {{ dataSet.createdAt|date('d-F-Y H:i:s') }}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+<style>
+    .form-group {
+        margin-bottom: 0;
+    }
+    .list-group-item a {
+        text-decoration: none;
+    }
+    .alert {
+        margin-top: 20px;
+    }
+    .alert-error {
+        color: #8d130a;
+        background-color: #efa09a;
+        border-color: #efa09a;
+    }
+    .margin-top {
+      margin-top: 20px;
+    }
+</style>
+{% endblock %}

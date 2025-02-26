@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Temperature Readings{% endblock %}
+
+{% block body %}
+<div style="clear: both;"></div>
+
+<div class="container mt-4">
+    <div class="card p-3">
+        <div class="card-header">
+            <h1>Temperature Readings for <a href="#">{{ dataSet.name }} </a></h1>
+        </div>
+        <div class="row">
+        <p>Mean Kinetic Temperature (MKT):<strong> {{ mkt }} &deg;C </strong></p>
+            <div class="col-md-6">
+                <canvas id="temperatureChart"></canvas>
+            </div>
+            <div class="col-md-6">
+                <table class="table mt-4">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Temperature (&deg;C)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reading in temperatureReadings %}
+                            <tr>
+                                <td>{{ reading.timestamp|date('d-F-Y H:i:s') }}</td>
+                                <td>{{ reading.temperature }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <a href="{{ path('upload') }}" class="btn btn-primary mt-3">Upload another file</a>
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/min/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0/dist/chartjs-adapter-moment.min.js"></script>
+<script>
+    //var labeltxt = 'MKT: '+{{mkt}}+'( °C)';
+    var labeltxt = 'Temperature (°C)';
+    var ctx = document.getElementById('temperatureChart').getContext('2d');
+    var temperatureData = {
+        labels: [
+            {% for reading in temperatureReadings %}
+                '{{ reading.timestamp|date('Y-m-d H:i:s') }}',
+            {% endfor %}
+        ],
+        datasets: [{
+            label: labeltxt,
+            data: [
+                {% for reading in temperatureReadings %}
+                    {{ reading.temperature }},
+                {% endfor %}
+            ],
+            borderColor: 'rgba(75, 192, 192, 1)',
+            fill: false
+        }]
+    };
+
+    var temperatureChart = new Chart(ctx, {
+        type: 'line',
+        data: temperatureData,
+        options: {
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'hour'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Timestamp'
+                    }
+                },
+                y: {
+                    beginAtZero: false,
+                    title: {
+                        display: true,
+                        text: 'Temperature (°C)'
+                    }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

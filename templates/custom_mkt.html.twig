@@ -1,0 +1,167 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Custom MKT Calculation{% endblock %}
+
+{% block body %}
+<div style="clear: both;"></div>
+
+<div class="container mt-4">
+    <div class="card p-3">
+        <div class="card-header">
+            <h1>MKT Calculation</h1>
+        </div>
+        <div class="card-body">
+            {% for label, messages in app.flashes %}
+                <div class="alert alert-{{ label }}">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <div class="row">
+                <div class="col-md-4">
+                    <form method="get" action="{{ path('custom_mkt') }}">
+                        <div class="form-group">
+                            <label for="start_datetime">Start Date and Time:</label>
+                            <input type="datetime-local" id="start_datetime" name="start_datetime" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="end_datetime">End Date and Time:</label>
+                            <input type="datetime-local" id="end_datetime" name="end_datetime" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Calculate</button>
+                    </form>
+                </div>
+                <div class="col-md-8">
+                    {% if temperatureReadings is defined %}
+
+                    {% if mkt is defined %}
+                    <div class="col-md-12">
+                        <div class="card-header">
+                            <p>Temperature Readings from {{ startDateTime|date('Y-m-d H:i:s') }} to {{ endDateTime|date('Y-m-d H:i:s') }}</p>
+                            <p><strong>Mean Kinetic Temperature (MKT):</strong> {{ mkt }} &deg;C</p>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="chart-container">
+                        <canvas id="temperatureChart"></canvas>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if temperatureReadings is defined %}
+    <div class="card mt-5">
+        <div class="card-header">
+            <h2>Temperature Readings from {{ startDateTime|date('Y-m-d H:i:s') }} to {{ endDateTime|date('Y-m-d H:i:s') }}</h2>
+        </div>
+        <div class="card-body">
+            <p><strong>Mean Kinetic Temperature (MKT):</strong> {{ mkt }} &deg;C</p>
+
+            <!-- Scrollable table -->
+            <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                <table class="table mt-4">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Temperature (&deg;C)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for reading in temperatureReadings %}
+                            <tr>
+                                <td>{{ reading.timestamp|date('Y-m-d H:i:s') }}</td>
+                                <td>{{ reading.temperature }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block stylesheets %}
+
+{% endblock %}
+
+{% block javascripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/min/moment.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0/dist/chartjs-adapter-moment.min.js"></script>
+<script>
+    
+    {% if startDateTime is defined %}
+        document.getElementById('start_datetime').value = '{{ startDateTime|date('Y-m-d H:i:s') }}';
+    {% endif %}
+    {% if endDateTime is defined %}
+        document.getElementById('end_datetime').value = '{{ endDateTime|date('Y-m-d H:i:s') }}';
+    {% endif %}
+
+    {% if temperatureReadings is defined %}
+    var ctx = document.getElementById('temperatureChart').getContext('2d');
+    var temperatureData = {
+        labels: [
+            {% for reading in temperatureReadings %}
+                '{{ reading.timestamp|date('Y-m-d H:i:s') }}',
+            {% endfor %}
+        ],
+        datasets: [{
+            label: 'Temperature (°C)',
+            data: [
+                {% for reading in temperatureReadings %}
+                    {{ reading.temperature }},
+                {% endfor %}
+            ],
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 2,
+            fill: false,
+            tension: 0.4 // Makes the line smoother (optional)
+        }]
+    };
+
+    var temperatureChart = new Chart(ctx, {
+        type: 'line',
+        data: temperatureData,
+        options: {
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'hour'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Timestamp'
+                    }
+                },
+                y: {
+                    beginAtZero: false,
+                    title: {
+                        display: true,
+                        text: 'Temperature (°C)'
+                    }
+                }
+            },
+            responsive: true, // Make the chart responsive
+            plugins: {
+                tooltip: {
+                    enabled: true,
+                    mode: 'index',
+                    intersect: false,
+                },
+                legend: {
+                    position: 'top',
+                }
+            }
+        }
+    });
+    {% endif %}
+</script>
+{% endblock %}
