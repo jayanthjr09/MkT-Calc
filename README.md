@@ -4,7 +4,7 @@ This is a PHP & Symfony application to calculate the Mean Kinetic Temperature (M
 
 ## Features
 
-- Upload time/temperature data from CSV, YML, or XML files
+- Upload time/temperature data from CSV..
 - Store data sets in the database
 - Calculate and display MKT for each data set
 - View data sets and their MKT results
@@ -19,8 +19,8 @@ This is a PHP & Symfony application to calculate the Mean Kinetic Temperature (M
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/your-username/mkt_calculator.git
-   cd mkt_calculator
+   git clone https://github.com/jayanthjr09/MkT-Calc.git
+   cd MkT-Calc
    ```
 
 2. Build and start the Docker containers:
@@ -40,7 +40,7 @@ This is a PHP & Symfony application to calculate the Mean Kinetic Temperature (M
 ## Running Tests
 
 ```bash
-docker-compose exec app php bin/phpunit
+docker-compose exec ./vendor/bin/phpunit --testdox
 ```
 
 ## License

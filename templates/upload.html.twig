@@ -14,7 +14,7 @@
     
     <div class="card p-3">
         <div class="d-flex align-items-center">
-            {{ form_start(form, {'attr': {'novalidate': 'novalidate', 'class': 'd-flex align-items-center w-100'}}) }}
+            {{ form_start(form, {'attr': {'id': 'upload-form', 'novalidate': 'novalidate', 'class': 'd-flex align-items-center w-100'}}) }}
             <div class="form-group me-3 mb-0">
                 {{ form_label(form.file, 'Please select a valid CSV file to upload.') }}
                 {{ form_widget(form.file, {'attr': {'class': 'form-control'}}) }}
@@ -36,6 +36,14 @@
         </ul>
     </div>
 </div>
+
+<!-- Loading Spinner -->
+<div id="overlay" style="display: none;">
+  <div id="loading-spinner" class="spinner-border text-primary" role="status">
+      <span class="sr-only"></span>
+  </div>
+</div>
+
 {% endblock %}
 
 {% block stylesheets %}
@@ -58,4 +66,15 @@
       margin-top: 20px;
     }
 </style>
+{% endblock %}
+
+{% block javascripts %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('upload-form').addEventListener('submit', function() {
+            document.getElementById('overlay').style.display = 'block';
+        });
+    });
+</script>
 {% endblock %}
